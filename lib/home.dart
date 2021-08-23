@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _token = value;
       print("token: $_token");
       FirebaseFirestore.instance.collection('users').doc(currentUserId).update(
-          {'token': value});
+          {'token': _token});
     });
   }
 
@@ -116,14 +116,12 @@ class _HomeScreenState extends State<HomeScreen> {
     // }
 
     Future sendNotification(String title, String message) async {
-
       await messaging.requestPermission(
           sound: true,
           badge: true,
           alert: true,
           provisional: false
       );
-
       try {
         //DocumentSnapshot<Map<String, dynamic>> ds = await FirebaseFirestore.instance.collection("users").doc(currentUserId).get();
         if (_token != null) {
@@ -145,7 +143,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   'view': 'orders'},
                 //'to': userToken,
                 'registration_ids' : ['dGsnZYO9QyCtgaN_VRaJ1y:APA91bF3Ud_wYo7vLyregHcHnCxo3qALNLgHQUvgNZomLcKwSDB2zq4IqLMB9HYkgVjlJ9dYgyoIun3gi0GoryRqUTZ0lTS69CWKs8qe36KlhEWcnpDsbJ46eScwXrtQsyLnq4bHdRJM',
-                'dypc7BwfQIKGLag7ecQtrp:APA91bFT8p37RGwW21TqT7Ys7bK-iMAgN3S-EZQ3WP7MlXtPABpTHHvr-Z9SYoV3jy9zI8lOcCRDWN8ljhLdIy4E_-wXtoj0T9gs-C-cBktZwRLvzjkptnKcSWrvn7IWKGGAr7shG7k7']
+                'dypc7BwfQIKGLag7ecQtrp:APA91bFT8p37RGwW21TqT7Ys7bK-iMAgN3S-EZQ3WP7MlXtPABpTHHvr-Z9SYoV3jy9zI8lOcCRDWN8ljhLdIy4E_-wXtoj0T9gs-C-cBktZwRLvzjkptnKcSWrvn7IWKGGAr7shG7k7',
+                'ce4Udk-qUUqBiI_Ay18rX6:APA91bHKmiqVZgS6MddgMpBqPTfMZKn4yAphyjG1yqukUbPu18_58ujWxwMkbeZplCOPhJkgmGsK6qSR69acPQEJZ9B1tMjYfAbMKyoJwmFqAxL_Xq5szw6a17oR0VkdBEVekpkbpz7N']
               },
             ),
           );
