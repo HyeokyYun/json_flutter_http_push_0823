@@ -20,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
 
 
   User? currentUser;
-
+  bool notiYes = true;
   bool isLoading = false;
 
   Future<void> signIn() async {
@@ -59,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
             'phtoUrl': currentUser!.photoURL,
             'uid': currentUser!.uid,
             'createTime': DateTime.now().millisecondsSinceEpoch.toString(),
+            'noti' : notiYes
           });
           Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(currentUserId: currentUser!.uid)));
         }
