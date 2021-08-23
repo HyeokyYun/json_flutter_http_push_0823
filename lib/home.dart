@@ -233,22 +233,4 @@ class _HomeScreenState extends State<HomeScreen> {
     //     print(e);
     //   }
     // }
-    // void _createPost(String token) async {
-    //   String url = 'https://fcm.googleapis.com/fcm/send';
-    //
-    //   final serverKey = await http.post('https://fcm.googleapis.com/fcm/send',
-    //     body: jsonEncode({
-    //       'to': token,
-    //       'notification':{
-    //         'title': "FMC",
-    //         'body': "messaging tuturoal"
-    //       },
-    //       'data':{
-    //         'msgId': 'msg_1234'
-    //       }
-    //     },),
-    //     headers: {'Content-Type': "applicatoin/json"},
-    //   );
-    //   final Post paresedReponse = Post.fromJSON(jsonDecode(serverKey.body));
-    // }
-}
+
