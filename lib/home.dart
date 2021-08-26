@@ -9,12 +9,10 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart';
-import 'package:json_flutter_http_push_0819/login.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
 import 'dart:async';
-
-import 'package:json_flutter_http_push_0819/push_noti.dart';
+import 'login.dart';
 
 class HomeScreen extends StatefulWidget {
   final String currentUserId;
@@ -43,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    //NotificationService.getTokenAndUpdate(currentUserId);
     messaging = FirebaseMessaging.instance;
     messaging.getToken().then((value) {
       _token = value;
@@ -91,8 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 controller: bodyController,
               ),
               ElevatedButton(onPressed: () async {
-                await sendNotification(
-                    titleController.text, bodyController.text);
+                //await NotificationService.getAllTokens;
+                await sendNotification(titleController.text, bodyController.text);
               },
                   child: Text('Send Message')
               ),
@@ -118,6 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // }
 
   Future sendNotification(String title, String message) async {
+    List<String> tokens = [];
     await messaging.requestPermission(
         sound: true,
         badge: true,
@@ -125,11 +125,16 @@ class _HomeScreenState extends State<HomeScreen> {
         provisional: false
     );
     try {
-      DocumentSnapshot<Map<String, dynamic>> ds = await FirebaseFirestore.instance.collection("token").doc(_token).get();
-      if(ds.data()!["token"] != null){
-      //if (_token != null) {
+      // DocumentSnapshot<Map<String, dynamic>> ds = await FirebaseFirestore
+      //     .instance.collection("token").doc(_token).get();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('users').get();
+      querySnapshot.docs.forEach((element){
+        tokens.add((element.data() as dynamic)["token"]);
+      });
+      //if (ds.data()!["token"] != null) {
+      if (_token != null) {
 
-        String userToken = ds.data()!["token"];
+        //String userToken = ds.data()!["token"];
         await post(
           Uri.parse('https://fcm.googleapis.com/fcm/send'),
           headers: <String, String>{
@@ -149,8 +154,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 'id': '${Random().nextInt(100)}',
                 'status': 'done',
                 'view': 'orders'},
-              'to': userToken,
-              //'registration_ids': userToken
+              //'to': userToken,
+              'registration_ids': tokens
               // 'registration_ids': [
               //   'dGsnZYO9QyCtgaN_VRaJ1y:APA91bF3Ud_wYo7vLyregHcHnCxo3qALNLgHQUvgNZomLcKwSDB2zq4IqLMB9HYkgVjlJ9dYgyoIun3gi0GoryRqUTZ0lTS69CWKs8qe36KlhEWcnpDsbJ46eScwXrtQsyLnq4bHdRJM',
               //   'dypc7BwfQIKGLag7ecQtrp:APA91bFT8p37RGwW21TqT7Ys7bK-iMAgN3S-EZQ3WP7MlXtPABpTHHvr-Z9SYoV3jy9zI8lOcCRDWN8ljhLdIy4E_-wXtoj0T9gs-C-cBktZwRLvzjkptnKcSWrvn7IWKGGAr7shG7k7',
@@ -167,82 +172,4 @@ class _HomeScreenState extends State<HomeScreen> {
       print(e);
     }
   }
-// Future sendNotification(String title, String message) async {
-//
-//   await messaging.requestPermission(
-//     sound: true,
-//     badge: true,
-//     alert: true,
-//     provisional: false
-//   );
-//
-//   try {
-//     DocumentSnapshot<Map<String, dynamic>> ds = await FirebaseFirestore.instance.collection("users").doc(currentUserId).get();
-//     if (ds.data()!['token'] != null) {
-//       String userToken = ds.data()!['token'];
-//       await post(
-//         Uri.parse('https://fcm.googleapis.com/fcm/send'),
-//         headers: <String, String>{
-//           'Content-Type': 'application/json',
-//           'Authorization': 'key=AAAAKpR1cYA:APA91bF6I5RtFTbxe_y8QXwIyTBszaoZuEb8wxSeqQWTZhIUMFEIHZ8jlxsDUlVPb8wyZuuuXEmYkcZVcd8vEzHQfE-9FPHKSyKbcZrxcQ75bTVYDP6i6MnjCuHv6VGmkzsWZMQR7RWV', // replace $serverToken with your firebase messaging server token
-//         },
-//         body: jsonEncode(
-//           <String, dynamic>{
-//             'notification': <String, dynamic>{'body': message, 'title': title},
-//             'priority': 'high',
-//             'data': <String, dynamic>{
-//               'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-//               'id': '${Random().nextInt(100)}',
-//               'status': 'done',
-//               'view': 'orders'},
-//             'to': userToken,
-//           },
-//         ),
-//       );
-//     } else {
-//       print("unable to fetch admin device token from database");
-//     }
-//   } catch (e) {
-//     print("Error in sending notification");
-//     print(e);
-//   }
-// }
-
-// Future createAndUploadDeviceID(String userid) async {
-//   try {
-//     final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
-//     // firebaseMessaging.requestNotificationPermissions();
-//     // firebaseMessaging.configure();
-//     String? token = await firebaseMessaging.getToken();
-//     await FirebaseFirestore.instance.collection("users").doc(userid).set({
-//       "token": token,
-//     });
-//   } catch (e) {
-//     print("XXXXXXXXXX error on createAndUploadDeviceID");
-//     print(e);
-//     return null;
-//   }
-// }
-
-// Future<void> sendPushMessage() async{
-//   if(_token == null){
-//     print('Unable to send FCM message, no token exits.');
-//     return;
-//   }
-//   try{
-//     await http.post(
-//       Uri.parse('https://api.rnfirebase.io/messaging/send'),
-//       headers: <String, String>{
-//         'Content-Type' :'applicatoin/json; charset=UTF-8',
-//         'Authorization': 'key = AAAAKpR1cYA:APA91bF6I5RtFTbxe_y8QXwIyTBszaoZuEb8wxSeqQWTZhIUMFEIHZ8jlxsDUlVPb8wyZuuuXEmYkcZVcd8vEzHQfE-9FPHKSyKbcZrxcQ75bTVYDP6i6MnjCuHv6VGmkzsWZMQR7RWV'
-//       },
-//       body: FCM(_token!),
-//     );
-//     //Fluttertoast.showToast(msg: FCM(_token!));
-//     print('${FCM(_token!)}');
-//   } catch (e) {
-//     print(e);
-//   }
-// }
 }
-
