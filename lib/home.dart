@@ -27,6 +27,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   _HomeScreenState({Key? key, required this.currentUserId});
 
+  final String serverKey = 'AAAAKpR1cYA:APA91bF6I5RtFTbxe_y8QXwIyTBszaoZuEb8wxSeqQWTZhIUMFEIHZ8jlxsDUlVPb8wyZuuuXEmYkcZVcd8vEzHQfE-9FPHKSyKbcZrxcQ75bTVYDP6i6MnjCuHv6VGmkzsWZMQR7RWV';
   final currentUserId;
   String? _token;
 
@@ -48,11 +49,10 @@ class _HomeScreenState extends State<HomeScreen> {
       print("token: $_token");
       FirebaseFirestore.instance.collection('users').doc(currentUserId).update(
           {'token': _token});
-      // FirebaseFirestore.instance.collection('tokens').doc(currentUserId).update(
-      //     {'token' : _token});
+      // FirebaseFirestore.instance.collection('tokens').doc(_token).set(
+      //      {'token' : _token});
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
         provisional: false
     );
     try {
-      DocumentSnapshot<Map<String, dynamic>> ds = await FirebaseFirestore.instance.collection("users").doc(currentUserId).get();
+      DocumentSnapshot<Map<String, dynamic>> ds = await FirebaseFirestore.instance.collection("token").doc(_token).get();
       if(ds.data()!["token"] != null){
       //if (_token != null) {
 
@@ -134,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Uri.parse('https://fcm.googleapis.com/fcm/send'),
           headers: <String, String>{
             'Content-Type': 'application/json',
-            'Authorization': 'key=AAAAKpR1cYA:APA91bF6I5RtFTbxe_y8QXwIyTBszaoZuEb8wxSeqQWTZhIUMFEIHZ8jlxsDUlVPb8wyZuuuXEmYkcZVcd8vEzHQfE-9FPHKSyKbcZrxcQ75bTVYDP6i6MnjCuHv6VGmkzsWZMQR7RWV',
+            'Authorization': 'key=$serverKey',
             // replace $serverToken with your firebase messaging server token
           },
           body: jsonEncode(
