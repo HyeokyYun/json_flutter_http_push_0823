@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:json_flutter_http_push_0819/push_noti.dart';
 import 'home.dart';
 
 class LoginPage extends StatefulWidget {

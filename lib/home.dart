@@ -102,20 +102,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // String FCM(String token){
-  //   return jsonEncode({
-  //     'notification': {
-  //       'title': 'Hello World',
-  //       'body': 'Test Notification'
-  //     },
-  //     'data':{
-  //       'click_action' : 'FLUTTER_NOTIFICATION_CLICK',
-  //       'id': '1',
-  //     },
-  //     'to': token,
-  //   });
-  // }
-
   Future sendNotification(String title, String message) async {
     List<String> tokens = [];
     await messaging.requestPermission(
@@ -125,15 +111,12 @@ class _HomeScreenState extends State<HomeScreen> {
         provisional: false
     );
     try {
-      // DocumentSnapshot<Map<String, dynamic>> ds = await FirebaseFirestore
-      //     .instance.collection("token").doc(_token).get();
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('users').get();
       querySnapshot.docs.forEach((element){
         tokens.add((element.data() as dynamic)["token"]);
       });
       //if (ds.data()!["token"] != null) {
       if (_token != null) {
-
         //String userToken = ds.data()!["token"];
         await post(
           Uri.parse('https://fcm.googleapis.com/fcm/send'),

@@ -27,11 +27,24 @@ dependencies:
   firebase_core:
   cloud_firestore:
   google_sign_in:
+  firebase_database:
   fluttertoast:
   firebase_messaging:
   flutter_local_notifications:
   http:
   firebase_analytics:
+  get:
+  agora_rtc_engine:
+  permission_handler:
+  flutter_signin_button:
+  google_fonts:
+  like_button:
+  screen_utils:
+  youtube_player_flutter:
+  clickable_list_wheel_view:
+  flutter_swiper_null_safety:
+  material_dialogs:
+  splashscreen:
 
 
   # The following adds the Cupertino Icons font to your application.
